@@ -115,9 +115,9 @@ def main():
 		#If shelve has values in it, they are posted to smap database.
 		#If the post is successful, the values are removed from the object. 
 		#If not successful, values remain for next iteration of main().
-		shelf['smap_value'] += [time_str_to_ms(TimeStr), diff_pulse] 
-		if shelf:
-			for smap_value in shelf:
+		shelf['smap_value'] += [[time_str_to_ms(TimeStr), diff_pulse]]
+		if shelf['smap_value']:
+			for smap_value in shelf['smap_value']:
 				response = smap_post(smap_sourcename, smap_value, path, uuid_pulse_diff, units)
 				if not response:
 					shelf.remove(smap_value)
