@@ -21,8 +21,9 @@ def time_str_to_ms(time_str):
         raise
     return int(epoch*1000)
 
-#units is a string, 'count'. 
-def smap_post(sourcename, smap_value, path, uuid, units):
+#smap_post() function takes ipnuts and sends data to smap database on LBNL remote server.
+#smap_value is a list of lists (date in ms and value).
+def smap_post(sourcename, smap_value, path, uuid, units): #prior smap_value was x, y
     smap_obj = {}
     smap_obj[path] = {}
 
@@ -34,7 +35,7 @@ def smap_post(sourcename, smap_value, path, uuid, units):
     smap_obj[path]["Properties"] = {"Timezone": "America/Los_Angeles",
                                     "UnitofMeasure": units,
                                     "ReadingType": "double"}
-    smap_obj[path]["Readings"] = [smap_value]
+    smap_obj[path]["Readings"] = smap_value # previously:[smap_value], [x,y]
     smap_obj[path]["uuid"] = uuid
 
     data_json = json.dumps(smap_obj)
@@ -116,14 +117,40 @@ def main():
 		#If the post is successful, the values are removed from the object. 
 		#If not successful, values remain for next iteration of main().
 		shelf['smap_value'] += [[time_str_to_ms(TimeStr), diff_pulse]]
+		
 		if shelf['smap_value']:
-			for smap_value in shelf['smap_value']:
-				response = smap_post(smap_sourcename, smap_value, path, uuid_pulse_diff, units)
-				if not response:
-					shelf.remove(smap_value)
+			response = smap_post(smap_sourcename, shelf['smap_value'], path, uuid_pulse_diff, units)
+			if not response:
+				shelf['smap_value'] = []
+			#for smap_value in shelf['smap_value']:
+				#response = smap_post(smap_sourcename, smap_value, path, uuid_pulse_diff, units)
+				#if not response:
+					#shelf.remove(smap_value)
 		#I have some concerns about the timing of this, when integrating the smap posting/shelf elements. 
 		#I've tested on my laptop, posting a single value, took 0.0071 seconds, which should not cause much disruption.		
 		time.sleep(60)
 
 if __name__ == "__main__":
 	main()
+	
+# 	
+# 	
+# 	
+# >>> shelf = []
+# >>> shelf += [[time_str_to_ms('2016-06-07 10:00:00'), 20]]
+# >>> shelf
+# [[1465318800000L, 20]]
+# >>> shelf += [[time_str_to_ms('2016-06-07 10:01:00'), 22]]
+# >>> shelf += [[time_str_to_ms('2016-06-07 10:02:00'), 24]]
+# >>> shelf += [[time_str_to_ms('2016-06-07 10:03:00'), 26]]	
+# 
+# smap_post(smap_sourcename, shelf, path, uuid_pulse_diff, units)
+# 
+# if shelf:
+# 	for smap_value in shelf:
+# 		response = smap_post(smap_sourcename, smap_value, path, uuid_pulse_diff, units)
+# 
+# if shelf['smap_value']:
+# 	response = smap_post(smap_sourcename, shelf['smap_value'], path, uuid_pulse_diff, units)
+# 	if not response:
+# 		shelf['smap_value'] = []
