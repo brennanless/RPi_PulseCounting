@@ -56,8 +56,8 @@ uuid_pulse_diff = 'eac7f466-2ccc-11e6-a8d0-acbc32bae629' #this is the one I've u
 units = 'count'
 timeout = 1
 
-path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/'
-archive_path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/archive/'
+path = '/home/pi/Documents/PulseCount/data/'
+archive_path = '/home/pi/Documents/PulseCount/data/archive/'
 os.chdir(path) #change working directory to path
 #all files in pwd except those beginning with '.', such as mac .DS_store files.
 files = []
