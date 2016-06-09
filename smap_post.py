@@ -73,7 +73,10 @@ val_now = datetime_to_int(dt)
 
 for file in range(len(files)):
 	val = file_to_int(files[file])
-	if(val < val_now):	
+	if(val == val_now):
+		continue
+	else:
+	#if(val < val_now):	
 		data = pd.read_csv(files[file], header=None)
 		data = data.dropna()
 		times = []
