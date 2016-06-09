@@ -48,9 +48,11 @@ def main():
 	global old_count	
 	global pulse_count
 
+	start_time = time.time()
+
 	#infinite loop with 60-second delay.
 	while True:
-		start_time = time.time()
+		#start_time = time.time()
 		dt = datetime.now() 
 		filename = datetime_to_filepath(dt)
 		historyFile = os.path.join(historyFilepath, filename)
@@ -67,7 +69,8 @@ def main():
 			cum.write(str(pulse_count))
 			
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count, diff_pulse)
-		time.sleep(60-(time.time() - start_time))
+		start_time += 60
+		time.sleep(start_time - time.time())
 
 
 if __name__ == "__main__":
