@@ -76,8 +76,8 @@ for file in range(len(files)):
 	if(val == val_now):
 		continue
 	else:
-	#if(val < val_now):	
-		data = pd.read_csv(files[file], header=None)
+		#if(val < val_now):	
+		data = pd.read_csv(files[file], header=None, dtype = {0:str, 1:int, 2:int})
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
@@ -91,6 +91,8 @@ for file in range(len(files)):
 		#If data.columns[] is set to 1, the the cumulative count is reported, 
 		#if set to 2, then the diff_pulse value is returned.
 		data_as_list = data[data.columns[2]].tolist()
+# 		for dat in data_as_list: #Brennan tried to convert from numpy.int64 to basic int. did not work.
+# 			data_as_list[dat] = int(data_as_list[dat])
 		smap_value = zip(times, data_as_list)
 		#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 		for i in range(len(smap_value)):
@@ -101,7 +103,7 @@ for file in range(len(files)):
 			print 'Connection error, will try again later.'
 		if not response:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
-			        
+					
 		
 # 
 # 
