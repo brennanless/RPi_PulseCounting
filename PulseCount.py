@@ -25,8 +25,8 @@ cumFile_2 = '/home/pi/Documents/PulseCount/cum_count_2.txt'
 #If cumFile exists, open it for reading. Set pulse_count_1 value based on file value.
 #If file is empty, set to 0, if file does not exist, set to 0.
 if(os.path.exists(cumFile_1)==True):
-	with open(cumFile_1, 'r') as cum:
-		dat = cum.read()
+	with open(cumFile_1, 'r') as cum_1:
+		dat = cum_1.read()
 		if(len(dat)==0):
 			pulse_count_1 = 0
 		else:
@@ -38,8 +38,8 @@ old_count_1 = pulse_count_1
 diff_pulse_1 = 0	
 	
 if(os.path.exists(cumFile_2)==True):
-	with open(cumFile_2, 'r') as cum:
-		dat = cum.read()
+	with open(cumFile_2, 'r') as cum_2:
+		dat = cum_2.read()
 		if(len(dat)==0):
 			pulse_count_2 = 0
 		else:
@@ -71,9 +71,10 @@ def main():
 	global old_count_2	
 	global pulse_count_2
 	
+	start_time = time.time()
+	
 	#infinite loop with 60-second delay.
 	while True:
-		start_time = time.time()
 		dt = datetime.now() 
 		filename = datetime_to_filepath(dt)
 		historyFile = os.path.join(historyFilepath, filename)
@@ -89,13 +90,15 @@ def main():
 			TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
 			#Write values to files.
 			datacsv.write(TimeStr + ',' + str(pulse_count_1) + ',' + str(diff_pulse_1) + ',' + str(pulse_count_2) + ',' + str(diff_pulse_2) + '\n')
-			cum.write(str(pulse_count_1))	
-			cum.write(str(pulse_count_2))
+			cum_1.write(str(pulse_count_1))	
+			cum_2.write(str(pulse_count_2))
 			
 		print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
 		print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
 		
-		time.sleep(60-(time.time() - start_time))
+		start_time += 60
+	
+		time.sleep(start_time - time.time())
 
 
 if __name__ == "__main__":
