@@ -35,7 +35,7 @@ def smap_post(sourcename, smap_value, path, uuid, units, timeout): #prior smap_v
     return r.text
     
 def file_to_int(file):
-	return int(file.strip('.')[0])    
+	return int(file.split('.')[0])    
 	
 def datetime_to_int(dt):
 	valstr = '%s%s%s%s' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))
