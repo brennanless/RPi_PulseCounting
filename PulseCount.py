@@ -68,7 +68,7 @@ def main():
 			datacsv.write(TimeStr + ',' + str(pulse_count) + ',' + str(diff_pulse) + '\n')
 			cum.write(str(pulse_count))
 			
-		print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count, diff_pulse)
+		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count, diff_pulse)
 		start_time += 60
 		time.sleep(start_time - time.time())
 
