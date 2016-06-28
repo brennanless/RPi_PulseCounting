@@ -35,7 +35,7 @@ def smap_post(sourcename, smap_value, path, uuid, units, timeout): #prior smap_v
     return r.text
     
 def file_to_int(file):
-	return int(file.strip('.')[0])    
+	return int(file.split('.')[0])    
 	
 def datetime_to_int(dt):
 	valstr = '%s%s%s%s' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))
@@ -50,10 +50,10 @@ def datetime_to_int(dt):
     
 #smap constants
 smap_sourcename = 'Turnberry'
-smap_path = '/Furnace_NaturalGas'
-uuid_pulse_count = 'e38eed0a-2ccc-11e6-a012-acbc32bae629'
-uuid_pulse_diff = 'eac7f466-2ccc-11e6-a8d0-acbc32bae629' #this is the one I've used so far.
-units = 'count'
+#smap_path = '/Furnace_NaturalGas'
+sensor_paths = ['/HVAC_AH_cum', '/HVAC_AH_pulses', '/HVAC_AC_cum', '/HVAC_AC_pulses']
+sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629']
+sensor_units = 'count'
 timeout = 1
 
 path = '/home/pi/Documents/PulseCount/data/'
@@ -77,7 +77,7 @@ for file in range(len(files)):
 		continue
 	else:
 		#if(val < val_now):	
-		data = pd.read_csv(files[file], header=None, dtype = {0:str, 1:int, 2:int})
+		data = pd.read_csv(files[file], header=None, dtype = {0:str, 1:int, 2:int, 3:int, 4:int})
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
@@ -85,44 +85,19 @@ for file in range(len(files)):
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
 		#zips each data column with the Unix timestamp list, creating a nested list.
-		#for col in range(len(data.columns)-2):
-		#Be sure to set this to retrieve whatever data you want, most likely the pulse_diff values.
-		#for col in range(2):
-		#If data.columns[] is set to 1, the the cumulative count is reported, 
-		#if set to 2, then the diff_pulse value is returned.
-		data_as_list = data[data.columns[2]].tolist()
-# 		for dat in data_as_list: #Brennan tried to convert from numpy.int64 to basic int. did not work.
-# 			data_as_list[dat] = int(data_as_list[dat])
-		smap_value = zip(times, data_as_list)
-		#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
-		for i in range(len(smap_value)):
-			smap_value[i] = list(smap_value[i])   
-		try:	     
-			response = smap_post(smap_sourcename, smap_value, smap_path, uuid_pulse_diff, units, timeout)
-		except requests.exceptions.ConnectionError:	
-			print 'Connection error, will try again later.'
-		if not response:
+		count = 0
+		for col in range(len(data.columns)-1):
+			data_as_list = data[data.columns[col+1]].tolist()
+			smap_value = zip(times, data_as_list)
+			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
+			for i in range(len(smap_value)):
+				smap_value[i] = list(smap_value[i])   
+			try:	     
+				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units, timeout)
+			except requests.exceptions.ConnectionError:	
+				print 'Connection error, will try again later.'
+			if not response:
+				count += 1
+		if count == 4:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
 					
-		
-# 
-# 
-# 
-# smap_value = [[time_str_to_ms('2016-06-08 12:16:00'), 47]]
-# 
-# while count <= 10:
-# 	try:
-# 		response = smap_post(smap_sourcename, smap_value, path, uuid_pulse_diff, units, timeout)
-# 	except requests.exceptions.ConnectionError:
-# 		print 'Connection has timed out, will try again in one minute.'
-# 
-# dt = datetime.now()    
-# 
-# val_now = datetime_to_int(dt)
-# 
-# if(dt.minute == 0):
-# 	historyFile = '/home/pi/Documents/PulseCount/%s%s%s%s.csv' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))
-# with open(historyFile) as datacsv:
-# 	...
-
-		

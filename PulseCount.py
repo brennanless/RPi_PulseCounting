@@ -54,6 +54,8 @@ diff_pulse_2 = 0
 GPIO.setmode(GPIO.BCM)
 
 #set up GPIO27 and GPIO18 pins as input, with RPi internal pull-down resistor set to keep it in a digital 'ON'
+#pulse1 values are for the Air Handler
+#pulse2 values are for the Compressor
 GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
@@ -93,8 +95,8 @@ def main():
 			cum_1.write(str(pulse_count_1))	
 			cum_2.write(str(pulse_count_2))
 			
-		print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
-		print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
+		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
+		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
 		
 		start_time += 60
 	
