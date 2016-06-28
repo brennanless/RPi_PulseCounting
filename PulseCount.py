@@ -82,19 +82,23 @@ def main():
 		historyFile = os.path.join(historyFilepath, filename)
 		
 		#Open data files for writing values.
-		with open(cumFile_1, 'w') as cum_1, open(cumFile_2, 'w') as cum_2, open(historyFile, 'a') as datacsv:
-			#Calculate pulses in current minute
-			diff_pulse_1 = pulse_count_1 - old_count_1
-			old_count_1 = pulse_count_1 #update old_count_1
-			diff_pulse_2 = pulse_count_2 - old_count_2
-			old_count_2 = pulse_count_2 #update old_count_2
-			DT = datetime.now()
-			TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
-			#Write values to files.
-			datacsv.write(TimeStr + ',' + str(pulse_count_1) + ',' + str(diff_pulse_1) + ',' + str(pulse_count_2) + ',' + str(diff_pulse_2) + '\n')
-			cum_1.write(str(pulse_count_1))	
-			cum_2.write(str(pulse_count_2))
-			
+		try:
+			with open(cumFile_1, 'w') as cum_1, open(cumFile_2, 'w') as cum_2, open(historyFile, 'a') as datacsv:
+				#Calculate pulses in current minute
+				diff_pulse_1 = pulse_count_1 - old_count_1
+				old_count_1 = pulse_count_1 #update old_count_1
+				diff_pulse_2 = pulse_count_2 - old_count_2
+				old_count_2 = pulse_count_2 #update old_count_2
+				DT = datetime.now()
+				TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
+				#Write values to files.
+				datacsv.write(TimeStr + ',' + str(pulse_count_1) + ',' + str(diff_pulse_1) + ',' + str(pulse_count_2) + ',' + str(diff_pulse_2) + '\n')
+				cum_1.write(str(pulse_count_1))	
+				cum_2.write(str(pulse_count_2))
+		except:
+			start_time += 60
+			time.sleep(start_time - time.time())
+
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
 		
