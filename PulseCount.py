@@ -36,6 +36,7 @@ diff_pulse = 0
 GPIO.setmode(GPIO.BCM)
 
 #set up GPIO27 pin as input, with RPi internal pull-down resistor set to keep it in a digital 'ON'
+#pulse1 channel is set for gas meter reading.
 GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Interrupt added to GPIO27 pin, execute pulse() whenever falling edge is detected.
@@ -58,16 +59,21 @@ def main():
 		historyFile = os.path.join(historyFilepath, filename)
 		
 		#Open data files for writing values.
-		with open(cumFile, 'w') as cum, open(historyFile, 'a') as datacsv:
-			#Calculate pulses in current minute
-			diff_pulse = pulse_count - old_count
-			old_count = pulse_count #update old_count
-			DT = datetime.now()
-			TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
-			#Write values to files.
-			datacsv.write(TimeStr + ',' + str(pulse_count) + ',' + str(diff_pulse) + '\n')
-			cum.write(str(pulse_count))
-			
+		try:
+			with open(cumFile, 'w') as cum, open(historyFile, 'a') as datacsv:
+				#Calculate pulses in current minute
+				diff_pulse = pulse_count - old_count
+				old_count = pulse_count #update old_count
+				DT = datetime.now()
+				TimeStr = DT.strftime('%Y-%m-%d %H:%M:%S')
+				#Write values to files.
+				datacsv.write(TimeStr + ',' + str(pulse_count) + ',' + str(diff_pulse) + '\n')
+				cum.write(str(pulse_count))
+		except:
+			start_time += 60
+			time.sleep(start_time - time.time())
+			continue
+						
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count, diff_pulse)
 		start_time += 60
 		time.sleep(start_time - time.time())
