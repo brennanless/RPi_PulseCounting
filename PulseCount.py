@@ -98,7 +98,8 @@ def main():
 		except:
 			start_time += 60
 			time.sleep(start_time - time.time())
-
+			continue
+	
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
 		
