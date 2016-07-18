@@ -30,7 +30,8 @@ def smap_post(sourcename, smap_value, path, uuid, units, timeout): #prior smap_v
     smap_obj[path]["uuid"] = uuid
     data_json = json.dumps(smap_obj)
     http_headers = {'Content-Type': 'application/json'}
-    smap_url = "https://render04.lbl.gov/backend/add/vQRmOWwffl65TRkb4cmj3jWfDiPsglwy4Bog"
+    #smap_url = "https://render04.lbl.gov/backend/add/vQRmOWwffl65TRkb4cmj3jWfDiPsglwy4Bog"
+    smap_url = "https://rbs-box2.lbl.gov/backend/add/vQRmOWwffl65TRkb4cmj3jWfDiPsglwy4Bog"
     r = requests.post(smap_url, data=data_json, headers=http_headers, verify=False, timeout=timeout)
     return r.text
     
