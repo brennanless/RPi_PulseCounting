@@ -5,6 +5,8 @@ import requests
 import json
 import pandas as pd
 
+kWh_perPulse_WattNode = 0.00015
+
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
     try:
@@ -83,6 +85,7 @@ for file in range(len(files)):
 		count = 0
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
+			data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
