@@ -56,7 +56,7 @@ def datetime_to_int(dt):
 #smap constants
 smap_sourcename = 'Turnberry'
 #smap_path = '/Furnace_NaturalGas'
-sensor_paths = ['/HVAC_blower_power_cum', '/HVAC_blower_power', '/Furnace_CH4-rate_cum', '/Furnace_CH4-rate']
+sensor_paths = ['/Furnace_CH4-rate_cum', '/Furnace_CH4-rate', '/HVAC_blower_power_cum', '/HVAC_blower_power']
 sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629']
 sensor_units = ['kWh', 'kWh', 'kWh', 'kWh']
 timeout = 10
@@ -82,7 +82,7 @@ for file in range(len(files)):
 		continue
 	else:
 		#if(val < val_now):	
-		data = pd.read_csv(files[file], header=None, dtype = {0:str, 1:int, 2:int, 3:int, 4:int})
+		data = pd.read_csv(files[file], header=None, dtype = {0:str, 1:float, 2:float, 3:float, 4:float})
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
@@ -94,9 +94,9 @@ for file in range(len(files)):
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
 			if col < 2:
-				data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
-			else:
 				data_as_list = [x * kWh_perPulse_Gas for x in data_as_list]
+			else:
+				data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
