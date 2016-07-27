@@ -5,6 +5,10 @@ import requests
 import json
 import pandas as pd
 
+
+kWh_perPulse_WattNode = 0.00015
+kWh_perPulse_Gas = 0.2998242
+
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
     try:
@@ -52,10 +56,10 @@ def datetime_to_int(dt):
 #smap constants
 smap_sourcename = 'Turnberry'
 #smap_path = '/Furnace_NaturalGas'
-sensor_paths = ['/HVAC_AH_cum', '/HVAC_AH_pulses', '/HVAC_AC_cum', '/HVAC_AC_pulses']
+sensor_paths = ['/HVAC_blower_power_cum', '/HVAC_blower_power', '/Furnace_CH4-rate_cum', '/Furnace_CH4-rate']
 sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629']
-sensor_units = 'count'
-timeout = 1
+sensor_units = ['kWh', 'kWh', 'kWh', 'kWh']
+timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
 #path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/'
@@ -89,12 +93,16 @@ for file in range(len(files)):
 		count = 0
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
+			if col < 2:
+				data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
+			else:
+				data_as_list = [x * kWh_perPulse_Gas for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
 				smap_value[i] = list(smap_value[i])   
 			try:	     
-				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units, timeout)
+				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units[col], timeout)
 			except requests.exceptions.ConnectionError:	
 				print 'Connection error, will try again later.'
 			if not response:
