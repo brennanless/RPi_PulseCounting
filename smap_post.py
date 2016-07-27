@@ -5,7 +5,7 @@ import requests
 import json
 import pandas as pd
 
-kWh_perPulse_WattNode = 0.00015
+kWh_perPulse_WattNode = 0.0003 #assumes a 30 Amp CT.
 
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
@@ -47,10 +47,10 @@ def datetime_to_int(dt):
     
 #smap constants
 smap_sourcename = 'Turnberry'
-sensor_paths = ['/Furnace_NaturalGas_cum', '/Furnace_NaturalGas_pulse']
+sensor_paths = ['/AC_comp_power_cum', '/AC_comp_power']
 sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629']
-sensor_units = 'count'
-timeout = 1
+sensor_units = 'kWh'
+timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
 #path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/'
@@ -85,13 +85,13 @@ for file in range(len(files)):
 		count = 0
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
-			data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
+			data_as_list = [(x * 2 * kWh_perPulse_WattNode) for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
 				smap_value[i] = list(smap_value[i])   
 			try:	     
-				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], units, timeout)
+				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units, timeout)
 			except requests.exceptions.ConnectionError:	
 				print 'Connection error, will try again later.'
 			if not response:
