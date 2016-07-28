@@ -9,6 +9,30 @@ import pandas as pd
 kWh_perPulse_WattNode = 0.00015
 kWh_perPulse_Gas = 0.2998242
 
+NVac = 120. #nominal line voltage
+PpPO = 3. #phases per pulse output
+CTamps = 15. #amperage rating of current transducer
+FSHz = 10. #full-scale pulse frequency
+CTmultiplier = 1. #this is because wer are monitoring only one leg of the 2-leg circuit
+
+#pass a list of counts, convert each count to a frequency, return list
+def pulseFreq(count):
+	freq = []
+	for val in range(len(count)):
+		freq.append(count[val]/60.)
+	return freq
+
+def power(pulse_freq):
+	global NVac
+	global PpPO
+	global CTamps
+	global FSHz
+	global CTmultiplier
+	pow = []
+	for val in range(len(pulse_freq)):
+		pow.append(CTmultiplier * (NVac * PpPO * CTamps * pulse_freq[val]) / FSHz)
+	return pow
+
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
     try:
@@ -56,9 +80,9 @@ def datetime_to_int(dt):
 #smap constants
 smap_sourcename = 'Turnberry'
 #smap_path = '/Furnace_NaturalGas'
-sensor_paths = ['/Furnace_CH4-rate_cum', '/Furnace_CH4-rate', '/HVAC_blower_power_cum', '/HVAC_blower_power']
-sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629']
-sensor_units = ['kWh', 'kWh', 'kWh', 'kWh']
+sensor_paths = ['/Furnace_CH4-rate_cum', '/Furnace_CH4-rate', '/HVAC_blower_energy_cum', '/HVAC_blower_energy', '/HVAC_blower_power']
+sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629', '60292b6e-54f3-11e6-b278-acbc32bae629']
+sensor_units = ['kWh', 'kWh', 'kWh', 'kWh', 'kW']
 timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
@@ -86,6 +110,8 @@ for file in range(len(files)):
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
+		pow = power(pulseFreq(data[data.columns[4]].tolist()))
+		data['power'] = pow #append column to dataframe
 		#Convert column of datetimes to Unix timestamps in msec
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
@@ -95,7 +121,7 @@ for file in range(len(files)):
 			data_as_list = data[data.columns[col+1]].tolist()
 			if col < 2:
 				data_as_list = [x * kWh_perPulse_Gas for x in data_as_list]
-			else:
+			else if col >= 2 & col <4:
 				data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
@@ -107,6 +133,6 @@ for file in range(len(files)):
 				print 'Connection error, will try again later.'
 			if not response:
 				count += 1
-		if count == 4:
+		if count == 5:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
 					
