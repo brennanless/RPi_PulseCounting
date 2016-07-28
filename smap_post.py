@@ -25,7 +25,7 @@ def power(pulse_freq):
 	global PpPO
 	global CTamps
 	global FSHz
-	Gloabl CTmultiplier
+	global CTmultiplier
 	pow = []
 	for val in range(len(pulse_freq)):
 		pow.append(CTmultiplier * (NVac * PpPO * CTamps * pulse_freq[val]) / FSHz)
@@ -71,7 +71,7 @@ def datetime_to_int(dt):
     
 #smap constants
 smap_sourcename = 'Turnberry'
-sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power]
+sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power']
 sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629', '0124dbb0-54e9-11e6-a05c-acbc32bae629']
 sensor_units = ['kWh', 'kWh', 'watts']
 timeout = 10
@@ -102,8 +102,8 @@ for file in range(len(files)):
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
-		power = power(pulseFreq(data[data.columns[2]].tolist())) #Convert pulses per minute to frequency and then calculate power in watts.
-		data['power'] = power #append column to dataframe
+		pow = power(pulseFreq(data[data.columns[2]].tolist())) #Convert pulses per minute to frequency and then calculate power in watts.
+		data['power'] = pow #append column to dataframe
 		#Convert column of datetimes to Unix timestamps in msec
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
