@@ -7,6 +7,30 @@ import pandas as pd
 
 kWh_perPulse_WattNode = 0.0005 #assumes a 50 Amp CT.
 
+NVac = 120. #nominal line voltage
+PpPO = 3. #phases per pulse output
+CTamps = 50. #amperage rating of current transducer
+FSHz = 10. #full-scale pulse frequency
+CTmultiplier = 2. #this is because wer are monitoring only one leg of the 2-leg circuit
+
+#pass a list of counts, convert each count to a frequency, return list
+def pulseFreq(count):
+	freq = []
+	for val in range(len(count)):
+		freq.append(count[val]/60.)
+	return freq
+
+def power(pulse_freq):
+	global NVac
+	global PpPO
+	global CTamps
+	global FSHz
+	Gloabl CTmultiplier
+	pow = []
+	for val in range(len(pulse_freq)):
+		pow.append(CTmultiplier * (NVac * PpPO * CTamps * pulse_freq[val]) / FSHz)
+	return pow
+
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
     try:
@@ -47,9 +71,9 @@ def datetime_to_int(dt):
     
 #smap constants
 smap_sourcename = 'Turnberry'
-sensor_paths = ['/AC_comp_power_cum', '/AC_comp_power']
-sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629']
-sensor_units = 'kWh'
+sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power]
+sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629', '0124dbb0-54e9-11e6-a05c-acbc32bae629']
+sensor_units = ['kWh', 'kWh', 'watts']
 timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
@@ -78,6 +102,8 @@ for file in range(len(files)):
 		data = data.dropna()
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
+		power = power(pulseFreq(data[data.columns[2]].tolist())) #Convert pulses per minute to frequency and then calculate power in watts.
+		data['power'] = power #append column to dataframe
 		#Convert column of datetimes to Unix timestamps in msec
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
@@ -85,13 +111,14 @@ for file in range(len(files)):
 		count = 0
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
-			data_as_list = [(x * 2 * kWh_perPulse_WattNode) for x in data_as_list]
+			if col < 3:
+				data_as_list = [(x * 2 * kWh_perPulse_WattNode) for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
 				smap_value[i] = list(smap_value[i])   
 			try:	     
-				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units, timeout)
+				response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units[col], timeout)
 			except requests.exceptions.ConnectionError:	
 				print 'Connection error, will try again later.'
 			if not response:
