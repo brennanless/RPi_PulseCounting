@@ -123,6 +123,6 @@ for file in range(len(files)):
 				print 'Connection error, will try again later.'
 			if not response:
 				count += 1
-		if count == 2:
+		if count == 3:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
 
