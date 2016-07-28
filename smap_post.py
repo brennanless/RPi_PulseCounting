@@ -5,7 +5,7 @@ import requests
 import json
 import pandas as pd
 
-kWh_perPulse_WattNode = 0.0003 #assumes a 30 Amp CT.
+kWh_perPulse_WattNode = 0.0005 #assumes a 50 Amp CT.
 
 def time_str_to_ms(time_str):
     pattern = "%Y-%m-%d %H:%M:%S"
