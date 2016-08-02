@@ -1,5 +1,0 @@
-#this is executed as sudo crontab -e
-#execute when rpi is booted.
-@reboot /usr/bin/python /home/pi/Documents/PulseCount/PulseCount.py &
-#execute on the 5th minute of every hour.
-5 * * * * /usr/bin/python /home/pi/Documents/PulseCount/smap_post.py
