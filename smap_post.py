@@ -133,6 +133,7 @@ for file in range(len(files)):
 				print 'Connection error, will try again later.'
 			if not response:
 				count += 1
+		#If all columns do not successfully post, the file is not archived, so it will try to post all data again next hour.		
 		if count == 5:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
 					
