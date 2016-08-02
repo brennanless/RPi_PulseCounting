@@ -73,7 +73,7 @@ def datetime_to_int(dt):
 smap_sourcename = 'Turnberry'
 sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power']
 sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629', '0124dbb0-54e9-11e6-a05c-acbc32bae629']
-sensor_units = ['kWh', 'kWh', 'watts']
+sensor_units = ['kWh', 'kWh', 'kW']
 timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
