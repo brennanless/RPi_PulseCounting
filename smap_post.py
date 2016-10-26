@@ -136,6 +136,7 @@ for file in range(len(files)):
 			if not response:
 				count += 1
 		#Dealing with posting the power measurements separately. This assuems that pow is calcualted correctly initially. 
+		col += 1		
 		smap_value = zip(times, pow)
 		for i in range(len(smap_value)):
 			smap_value[i] = list(smap_value[i])
