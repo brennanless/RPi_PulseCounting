@@ -73,7 +73,7 @@ def datetime_to_int(dt):
 smap_sourcename = 'Turnberry'
 sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power']
 sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629', '0124dbb0-54e9-11e6-a05c-acbc32bae629']
-sensor_units = ['kWh', 'kWh', 'kW']
+sensor_units = ['kWh', 'kWh', 'W']
 timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
@@ -103,7 +103,7 @@ for file in range(len(files)):
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
 		pow = power(pulseFreq(data[data.columns[2]].tolist())) #Convert pulses per minute to frequency and then calculate power in watts.
-		data['power'] = pow #append column to dataframe
+		#data['power'] = pow #append column to dataframe
 		#Convert column of datetimes to Unix timestamps in msec
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
@@ -123,6 +123,16 @@ for file in range(len(files)):
 				print 'Connection error, will try again later.'
 			if not response:
 				count += 1
+		col += 1
+		smap_value = zip(times, pow)
+		for i in range(len(smap_value)):
+			smap_value[i] = list(smap_value[i])
+		try:
+			response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units[col], timeout)
+		except requests.exceptions.ConnectionError:
+			print 'Connectino error, will try again later.'
+		if not response:
+			count += 1		
 		if count == 3:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
 
