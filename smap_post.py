@@ -111,7 +111,7 @@ for file in range(len(files)):
 		times = []
 		times_as_list = data[data.columns[0]].tolist() #extracts the date-time column as a list. 
 		pow = power(pulseFreq(data[data.columns[4]].tolist()))
-		data['power'] = pow #append column to dataframe
+		#data['power'] = pow #append column to dataframe
 		#Convert column of datetimes to Unix timestamps in msec
 		for i in range(len(times_as_list)):
 			times.append(time_str_to_ms(times_as_list[i]))
@@ -123,8 +123,8 @@ for file in range(len(files)):
 				data_vals = [x * kWh_perPulse_Gas for x in data_as_list]
 			elif col >= 2 & col <4:
 				data_vals = [x * kWh_perPulse_WattNode for x in data_as_list]
-			else:
-				data_vals = data_as_list
+			#else:
+			#	data_vals = data_as_list
 			smap_value = zip(times, data_vals)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
@@ -135,6 +135,16 @@ for file in range(len(files)):
 				print 'Connection error, will try again later.'
 			if not response:
 				count += 1
+		#Dealing with posting the power measurements separately. This assuems that pow is calcualted correctly initially. 
+		smap_value = zip(times, pow)
+		for i in range(len(smap_value)):
+			smap_value[i] = list(smap_value[i])
+		try:
+			response = smap_post(smap_sourcename, smap_value, sensor_paths[col], sensor_uuids[col], sensor_units[col], timeout)
+		except requests.exceptions.ConnectionError:		
+			print 'Connection error, will try again later.'
+		if not response:
+			count += 1
 		#If all columns do not successfully post, the file is not archived, so it will try to post all data again next hour.		
 		if count == 5:
 			os.rename(path + files[file], archive_path + files[file]) #moves posted file to 'archive' directory.
