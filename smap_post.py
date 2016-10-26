@@ -82,7 +82,7 @@ smap_sourcename = 'Turnberry'
 #smap_path = '/Furnace_NaturalGas'
 sensor_paths = ['/Furnace_CH4-rate_cum', '/Furnace_CH4-rate', '/HVAC_blower_energy_cum', '/HVAC_blower_energy', '/HVAC_blower_power']
 sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629', '60292b6e-54f3-11e6-b278-acbc32bae629']
-sensor_units = ['kWh', 'kWh', 'kWh', 'kWh', 'kW']
+sensor_units = ['kWh', 'kWh', 'kWh', 'kWh', 'W']
 timeout = 10
 
 path = '/home/pi/Documents/PulseCount/data/'
