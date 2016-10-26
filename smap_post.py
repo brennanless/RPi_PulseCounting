@@ -120,10 +120,12 @@ for file in range(len(files)):
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
 			if col < 2:
-				data_as_list = [x * kWh_perPulse_Gas for x in data_as_list]
+				data = [x * kWh_perPulse_Gas for x in data_as_list]
 			elif col >= 2 & col <4:
-				data_as_list = [x * kWh_perPulse_WattNode for x in data_as_list]
-			smap_value = zip(times, data_as_list)
+				data = [x * kWh_perPulse_WattNode for x in data_as_list]
+			else:
+				data = data_as_list
+			smap_value = zip(times, data)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
 				smap_value[i] = list(smap_value[i])   
