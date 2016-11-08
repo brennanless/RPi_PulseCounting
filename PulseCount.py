@@ -6,7 +6,10 @@ import os
 #threaded call-back function, executed whenever a falling edge is detected.
 def pulse_1(channel):
 	global pulse_count_1
-	pulse_count_1+=1
+	time.sleep(0.3)
+	if(GPIO.input(27)==False):
+		pulse_count_1+=1
+	#pulse_count_1+=1
 	
 def pulse_2(channel):
 	global pulse_count_2
