@@ -78,7 +78,7 @@ def main():
 	
 	start_time = time.time()
 	
-	#infinite loop with 60-second delay.
+	#infinite loop with 30-second delay.
 	while True:
 		dt = datetime.now() 
 		filename = datetime_to_filepath(dt)
@@ -87,9 +87,15 @@ def main():
 		#Open data files for writing values.
 		try:
 			with open(cumFile_1, 'w') as cum_1, open(cumFile_2, 'w') as cum_2, open(historyFile, 'a') as datacsv:
-				#Calculate pulses in current minute
-				diff_pulse_1 = pulse_count_1 - old_count_1
-				old_count_1 = pulse_count_1 #update old_count_1
+				#Calculate pulses in current 30-second interval. #minute
+				# we restrain the count to be a maximum value of 1 over any 30-second interval, which should eliminate jitter.
+				if((pulse_count_1 - old_count_1) > 0):
+					diff_pulse_1 = 1
+					old_count_1 += 1
+					pulse_count_1 = old_count_1
+				else:
+					diff_pulse_1 = 0
+				#old_count_1 = pulse_count_1 #update old_count_1
 				diff_pulse_2 = pulse_count_2 - old_count_2
 				old_count_2 = pulse_count_2 #update old_count_2
 				DT = datetime.now()
@@ -99,14 +105,14 @@ def main():
 				cum_1.write(str(pulse_count_1))	
 				cum_2.write(str(pulse_count_2))
 		except:
-			start_time += 60
+			start_time += 30 #60
 			time.sleep(start_time - time.time())
 			continue
 	
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_1, diff_pulse_1)
 		#print 'Total pulses counted = %i; recent pulses = %i' %(pulse_count_2, diff_pulse_2)
 		
-		start_time += 60
+		start_time += 30 #60
 	
 		time.sleep(start_time - time.time())
 
