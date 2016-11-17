@@ -19,7 +19,7 @@ CTmultiplier = 1. #this is because wer are monitoring only one leg of the 2-leg 
 def pulseFreq(count):
 	freq = []
 	for val in range(len(count)):
-		freq.append(count[val]/60.)
+		freq.append(count[val]/30.) #was divided by 60
 	return freq
 
 def power(pulse_freq):
