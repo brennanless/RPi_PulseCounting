@@ -70,9 +70,9 @@ def datetime_to_int(dt):
 
     
 #smap constants
-smap_sourcename = 'Turnberry'
+smap_sourcename = 'Clovis_EnergyMonitors'
 sensor_paths = ['/AC_comp_energy_cum', '/AC_comp_energy', '/AC_comp_power']
-sensor_uuids = ['e38eed0a-2ccc-11e6-a012-acbc32bae629', 'eac7f466-2ccc-11e6-a8d0-acbc32bae629', '0124dbb0-54e9-11e6-a05c-acbc32bae629']
+sensor_uuids = ['216471b8-e421-11e6-9a1b-acbc32bae629', '21e63d5e-e421-11e6-86d1-acbc32bae629', '220dbbfd-e421-11e6-908e-acbc32bae629']
 sensor_units = ['kWh', 'kWh', 'W']
 timeout = 10
 
