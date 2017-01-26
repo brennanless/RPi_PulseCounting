@@ -78,10 +78,10 @@ def datetime_to_int(dt):
   
     
 #smap constants
-smap_sourcename = 'Turnberry'
+smap_sourcename = 'Clovis_EnergyMonitors'
 #smap_path = '/Furnace_NaturalGas'
 sensor_paths = ['/Furnace_CH4-rate_cum', '/Furnace_CH4-rate', '/HVAC_blower_energy_cum', '/HVAC_blower_energy', '/HVAC_blower_power']
-sensor_uuids = ['bf7476b0-3d84-11e6-8672-acbc32bae629', 'c6f8fc61-3d84-11e6-a61f-acbc32bae629', 'ccdb58c7-3d84-11e6-9699-acbc32bae629', 'd2b1c34a-3d84-11e6-b723-acbc32bae629', '60292b6e-54f3-11e6-b278-acbc32bae629']
+sensor_uuids = ['be9f48ca-e3f4-11e6-9e1c-acbc32bae629', 'bd255f3d-e3f4-11e6-b00c-acbc32bae629', 'bd788470-e3f4-11e6-b199-acbc32bae629', 'bdaf740a-e3f4-11e6-99fd-acbc32bae629', 'bde03e11-e3f4-11e6-a301-acbc32bae629']
 sensor_units = ['kWh', 'kWh', 'kWh', 'kWh', 'W']
 timeout = 10
 
