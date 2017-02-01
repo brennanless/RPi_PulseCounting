@@ -13,8 +13,8 @@ def datetime_to_filepath(dt):
 	return '%s%s%s%s.csv' %(dt.strftime('%Y'), dt.strftime('%m'), dt.strftime('%d'), dt.strftime('%H'))  
 
 #local data storage file paths
-historyFilepath = '/home/pi/Documents/PulseCount/data/'
-cumFile = '/home/pi/Documents/PulseCount/cum_count.txt'
+historyFilepath = '/home/pi/Documents/RPi_PulseCounting/data/'
+cumFile = '/home/pi/Documents/RPi_PulseCounting/cum_count.txt'
 
 #Assign values to pulse_count, diff_pulse and old_count.
 #If cumFile exists, open it for reading. Set pulse_count value based on file value.
