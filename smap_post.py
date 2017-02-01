@@ -85,10 +85,10 @@ sensor_uuids = ['be9f48ca-e3f4-11e6-9e1c-acbc32bae629', 'bd255f3d-e3f4-11e6-b00c
 sensor_units = ['kWh', 'kWh', 'kWh', 'kWh', 'W']
 timeout = 10
 
-path = '/home/pi/Documents/PulseCount/data/'
+path = '/home/pi/Documents/RPi_PulseCounting/data/'
 #path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/'
 #archive_path = '/Users/brennanless/GoogleDrive/Attics_CEC/DAQ/RPi_PulseCounting/data/archive/'
-archive_path = '/home/pi/Documents/PulseCount/data/archive/'
+archive_path = '/home/pi/Documents/RPi_PulseCounting/data/archive/'
 os.chdir(path) #change working directory to path
 #all files in pwd except those beginning with '.', such as mac .DS_store files.
 files = []
