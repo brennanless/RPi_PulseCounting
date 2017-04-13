@@ -40,7 +40,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(27, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 #Interrupt added to GPIO27 pin, execute pulse() whenever falling edge is detected.
-GPIO.add_event_detect(27, GPIO.FALLING, callback=pulse)
+GPIO.add_event_detect(27, GPIO.FALLING, callback=pulse, bouncetime=50)
 
 def main():
 
