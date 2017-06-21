@@ -11,7 +11,7 @@ NVac = 120. #nominal line voltage
 PpPO = 3. #phases per pulse output
 CTamps = 50. #amperage rating of current transducer
 FSHz = 10. #full-scale pulse frequency
-CTmultiplier = 2. #this is because wer are monitoring only one leg of the 2-leg circuit
+CTmultiplier = 1. #this is because wer are monitoring only one leg of the 2-leg circuit
 
 #pass a list of counts, convert each count to a frequency, return list
 def pulseFreq(count):
@@ -112,7 +112,7 @@ for file in range(len(files)):
 		for col in range(len(data.columns)-1):
 			data_as_list = data[data.columns[col+1]].tolist()
 			if col < 3:
-				data_as_list = [(x * 2 * kWh_perPulse_WattNode) for x in data_as_list]
+				data_as_list = [(x * CTmultiplier * kWh_perPulse_WattNode) for x in data_as_list]
 			smap_value = zip(times, data_as_list)
 			#this creates a nested list-of-lists, from the original list of tuples [[],[]] vs. [(), ()].
 			for i in range(len(smap_value)):
